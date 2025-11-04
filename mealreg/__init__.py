@@ -18,8 +18,16 @@ def create_app(config_class=Config):
     # ❗ 關鍵修正：註冊 auth 藍圖
     # ===============================================
     from .api.auth import auth_bp 
-    app.register_blueprint(auth_bp) # 由於 auth_bp 已經設定 url_prefix='/auth'，這裡無需再設定
+    from .api.canteen import canteen_bp
+    from .api.meal import meal_bp
+    from .api.public import public_bp
+    from .api.order import order_bp
 
+    app.register_blueprint(auth_bp) # 由於 auth_bp 已經設定 url_prefix='/auth'，這裡無需再設定
+    app.register_blueprint(canteen_bp) # 由於 canteen_bp 已經設定 url_prefix='/admin/canteens'，這裡無需再設定
+    app.register_blueprint(meal_bp) # 由於 meal_bp 已經設定 url 
+    app.register_blueprint(public_bp) # 由於 public_bp 已經設定 url_prefix='/public'，這裡無需再設定   
+    app.register_blueprint(order_bp) # 由於 order_bp 已經設定 url_prefix='/orders'，這裡無需再設定
 
     # ===============================================
     # ❗ 首次展示：定義一個根目錄路由 (Route)

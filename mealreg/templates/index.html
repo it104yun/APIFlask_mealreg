@@ -1,24 +1,173 @@
-
 {% extends "base.html" %}
 
-{% block title %}I am index.html. {% endblock %}
-
-{% block header %}
-  <h1>I am header block.</h1>
-{% endblock %}
-
 {% block content %}
-  <h1>I am content block.</h1>  
+    <section id="login-page" class="page-section">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-4">
+                <h2 class="mb-4 text-center">員工訂餐系統登入</h2>
+                <form id="login-form">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">用戶名</label>
+                        <input type="text" class="form-control" id="username" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">密碼</label>
+                        <input type="password" class="form-control" id="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">登入</button>
+                    <div id="login-alert" class="alert alert-danger mt-3 d-none" role="alert"></div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <section id="employee-order-page" class="page-section">
+        <h2 class="mb-4">今日菜單與訂餐</h2>
+        <div id="menu-list" class="row">
+            </div>
+        <div id="order-status-alert" class="alert mt-4 d-none" role="alert"></div>
+    </section>
+
+    <section id="employee-history-page" class="page-section">
+        <h2 class="mb-4">我的歷史訂單 (12:00 PM 截止)</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>日期</th>
+                    <th>便當名稱</th>
+                    <th>價格 (元)</th>
+                    <th>狀態</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody id="history-table-body">
+                </tbody>
+        </table>
+    </section>
+
+    <section id="admin-dashboard-page" class="page-section">
+        <h2 class="mb-4">總務管理儀表板</h2>
+        <ul class="nav nav-tabs" id="adminTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="stats-tab" data-bs-toggle="tab" data-bs-target="#stats-content" type="button" role="tab">訂單統計與結算</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="menu-management-tab" data-bs-toggle="tab" data-bs-target="#menu-management-content" type="button" role="tab">菜單/餐廳管理</button>
+            </li>
+        </ul>
+        <div class="tab-content pt-3" id="adminTabsContent">
+            <div class="tab-pane fade show active" id="stats-content" role="tabpanel">
+                <h3>每日訂單總結 (今日)</h3>
+                <div id="summary-data" class="row mb-4">
+                    </div>
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>便當名稱</th>
+                            <th>訂購數量</th>
+                            <th>總金額 (元)</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="meals-summary-body">
+                        </tbody>
+                </table>
+            </div>
+            <div class="tab-pane fade" id="menu-management-content" role="tabpanel">
+                <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addCanteenModal">新增餐廳</button>
+                <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addMealModal">新增便當</button>
+                
+                <h4>餐廳列表</h4>
+                <div id="canteen-list"></div>
+                
+                <h4 class="mt-4">便當列表</h4>
+                <div id="meal-list-admin"></div>
+                
+            </div>
+        </div>
+    </section>
 {% endblock %}
 
-{% block footer %}
-  <h1>I am footer block.</h1>  
-{% endblock %}
 
- {% block memo_section %} 
-      <h3>
-      {% for message in initial_parameter %}
-            {{ message }}<br>
-      {% endfor %}
-      </h3>
- {% endblock %}
+{% block scripts %}
+
+<div class="modal fade" id="canteenModal" tabindex="-1" aria-labelledby="canteenModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="canteenModalLabel">新增/編輯餐廳</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="canteen-form">
+                <div class="modal-body">
+                    <input type="hidden" id="canteen-id">
+                    <div class="mb-3">
+                        <label for="canteen-name" class="form-label">餐廳名稱</label>
+                        <input type="text" class="form-control" id="canteen-name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="canteen-description" class="form-label">簡要描述</label>
+                        <input type="text" class="form-control" id="canteen-description">
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="canteen-is-active">
+                        <label class="form-check-label" for="canteen-is-active">
+                            是否活躍 (顯示在員工菜單)
+                        </label>
+                    </div>
+                    <div id="canteen-alert" class="alert alert-danger mt-3 d-none"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    <button type="submit" class="btn btn-primary" id="canteen-submit-btn">儲存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="mealModal" tabindex="-1" aria-labelledby="mealModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="mealModalLabel">新增/編輯便當</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="meal-form">
+                <div class="modal-body">
+                    <input type="hidden" id="meal-id">
+                    <div class="mb-3">
+                        <label for="meal-name" class="form-label">便當名稱</label>
+                        <input type="text" class="form-control" id="meal-name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="meal-price" class="form-label">價格 (元)</label>
+                        <input type="number" class="form-control" id="meal-price" step="0.01" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="meal-canteen" class="form-label">所屬餐廳</label>
+                        <select class="form-select" id="meal-canteen" required>
+                            </select>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="meal-is-active">
+                        <label class="form-check-label" for="meal-is-active">
+                            是否供應中
+                        </label>
+                    </div>
+                    <div id="meal-alert" class="alert alert-danger mt-3 d-none"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    <button type="submit" class="btn btn-primary" id="meal-submit-btn">儲存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ... 啟動 JS 邏輯不變 ...
+</script>
+
+{% endblock %}

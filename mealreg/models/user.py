@@ -29,6 +29,10 @@ class User(db.Model):
     # 帳號創建時間
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
+    # 新增：與 Order 的一對多關聯 (在 order.py 中已經設置了 backref，這裡可以省略顯式定義，但保留清晰)
+    # orders = db.relationship('Order', backref='user', lazy='dynamic')
+
+
     # ========================
     # 密碼散列方法 (Security Methods)
     # ========================
