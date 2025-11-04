@@ -1,0 +1,19 @@
+body {
+    background-color: #ffff99;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: medium;
+}
+
+h1,h2{
+    color: navy;
+    text-align: center;
+    font-weight: 50;
+    font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+
+h3,h4,h5,h6 {
+    color: OrangeRed;
+    font-family: cursive;
+    text-align: center;
+    font-weight: 800;
+}

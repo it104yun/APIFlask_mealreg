@@ -1,0 +1,24 @@
+
+{% extends "base.html" %}
+
+{% block title %}I am index.html. {% endblock %}
+
+{% block header %}
+  <h1>I am header block.</h1>
+{% endblock %}
+
+{% block content %}
+  <h1>I am content block.</h1>  
+{% endblock %}
+
+{% block footer %}
+  <h1>I am footer block.</h1>  
+{% endblock %}
+
+ {% block memo_section %} 
+      <h3>
+      {% for message in initial_parameter %}
+            {{ message }}<br>
+      {% endfor %}
+      </h3>
+ {% endblock %}
